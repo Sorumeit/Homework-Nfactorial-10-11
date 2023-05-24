@@ -229,7 +229,6 @@ def remove_elements(my_list: list, element):
     upd = list(upd_iterator)
     return upd 
     pass
-print( remove_elements([1, 2, 3, 2, 4, 2, 5], 2) )
 
 """
 Exercise-16: Higher-Order Function for Repeats
