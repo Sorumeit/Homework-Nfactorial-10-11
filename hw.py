@@ -1,3 +1,5 @@
+import time
+import functools
 """
 Exercise-1: First-class Function Operation
 Write a function "operation(func, x: int, y: int) -> int" that takes in a function 'func' and two integers, 'x' and 'y'. Apply the function to the two numbers and return the result. 
@@ -9,6 +11,7 @@ operation(multiply, 5, 3) -> 15
 """
 
 def operation(func, x: int, y: int) -> int:
+    return func( x , y )
     pass
 
 """
@@ -20,6 +23,7 @@ my_map(lambda x: x**2, [1, 2, 3, 4]) -> [1, 4, 9, 16]
 """
 
 def my_map(func, my_list: list) -> list:
+    return list( map( lambda x: func( x ) , my_list  ) )
     pass
 
 """
@@ -31,6 +35,13 @@ filter_even_numbers([1, 2, 3, 4, 5, 6, 7, 8]) -> [1, 3, 5, 7]
 """
 
 def filter_even_numbers(numbers: list) -> list:
+    def check_even(number):
+        if number % 2 == 0:
+            return True  
+        return False
+    even_numbers_iterator = filter(check_even, numbers)
+    even_numbers = list(even_numbers_iterator)
+    print(even_numbers)
     pass
 
 """
@@ -42,6 +53,10 @@ recursive_factorial(5) -> 120
 """
 
 def recursive_factorial(n: int) -> int:
+    if ( n == 0 ):
+        return 1
+    else:
+        return n * recursive_factorial( n - 1 )
     pass
 
 """
@@ -55,6 +70,10 @@ def sample_func():
 """
 
 def timeit_decorator(func):
+    start = time.time()
+    func()
+    end = time.time()
+    return ( end - start )
     pass
 
 """
@@ -71,6 +90,11 @@ new_func(3) -> 36
 """
 
 def compose(*funcs):
+    def inner( n : int ):
+        for i in funcs:
+            n = i(n)
+        print ( n )
+    return inner
     pass
 
 """
@@ -85,6 +109,9 @@ add_five_and_six(7) -> 18
 """
 
 def partial(func, *args):
+    def inner( *arg ):
+        print( func( args + arg ) )
+    return inner
     pass
 
 """
@@ -96,8 +123,8 @@ factorial_reduce(5) -> 120
 """
 
 def factorial_reduce(n: int) -> int:
+    return( functools.reduce(lambda x , y : x * y , range( 1 , n + 1 )) )
     pass
-
 """
 Exercise-9: Function Memoization
 Write a function "memoize(func)" that takes a function and returns a memoized version of the function. The memoized version should cache the results of the function so that the next time it's called with the same arguments, it returns the cached value instead of calculating the result again.
@@ -144,8 +171,15 @@ recursive_reverse([1, 2, 3, 4, 5]) -> [5, 4, 3, 2, 1]
 """
 
 def recursive_reverse(my_list: list) -> list:
+    ans = []
+    n = len(my_list) - 1
+    def rever( pos : int ):   
+        if ( pos != -1 ):
+            ans.append( my_list[pos] )
+            rever( pos - 1 )
+    rever( n )
+    return ans 
     pass
-
 """
 Exercise-13: Decorator for Function Counting
 Write a decorator function "count_calls(func)" that counts the number of times a function is called.
@@ -161,6 +195,13 @@ test_function()
 """
 
 def count_calls(func):
+    cnt = 0
+    def inner( *args , **kwargs ):
+        nonlocal cnt
+        cnt += 1
+        return func( *args , **kwargs )
+    print( func.__name__, "was called" , cnt , "times" , sep = " " )
+    return inner
     pass
 
 """
@@ -172,6 +213,7 @@ find_max([1, 2, 3, 4, 5]) -> 5
 """
 
 def find_max(numbers: list) -> int:
+    return( functools.reduce(lambda x , y : x if x > y else y, numbers) )
     pass
 
 """
@@ -183,7 +225,11 @@ remove_elements([1, 2, 3, 2, 4, 2, 5], 2) -> [1, 3, 4, 5]
 """
 
 def remove_elements(my_list: list, element):
+    upd_iterator = filter( lambda x: x != element , my_list )
+    upd = list(upd_iterator)
+    return upd 
     pass
+print( remove_elements([1, 2, 3, 2, 4, 2, 5], 2) )
 
 """
 Exercise-16: Higher-Order Function for Repeats
@@ -195,8 +241,13 @@ repeat_three_times('hello') -> 'hellohellohello'
 """
 
 def repeat(n: int):
+    def inner( s : str ):
+        ans = ""
+        for i in range( 1 , n + 1 ):
+            ans += s
+        print( ans )
+    return inner
     pass
-
 """
 Exercise-17: Recursive List Sum
 Write a function "recursive_sum(my_list: list) -> int" that recursively computes the sum of a list of integers.
@@ -206,6 +257,14 @@ recursive_sum([1, 2, 3, 4, 5]) -> 15
 """
 
 def recursive_sum(my_list: list) -> int:
+    n = len(my_list) - 1
+    sum = 0
+    def rever( pos : int ):   
+        if ( pos != -1 ):
+            sum += my_list[pos]
+            rever( pos - 1 )
+    rever( n )
+    return sum
     pass
 
 """
@@ -217,4 +276,7 @@ add_two_lists([1, 2, 3], [4, 5, 6]) -> [5, 7, 9]
 """
 
 def add_two_lists(list1: list, list2: list) -> list:
+    def sum( x : int , y : int ):
+        return x + y
+    return list( map( sum , list1 , list2 ) )
     pass
